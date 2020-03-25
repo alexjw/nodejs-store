@@ -9,7 +9,8 @@
     "rootDir": "./src",
     "checkJs": true,
     "allowJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "outDir": "dist"
   },
   "include": [
     "src/**/*"
