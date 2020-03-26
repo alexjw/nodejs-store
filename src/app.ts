@@ -1,3 +1,5 @@
+import Path from "path";
+
 const http = require('http');
 const routes = require('./routes');
 import Express from 'express';
@@ -10,12 +12,13 @@ const app = Express();
 
 app.use(BodyParser.urlencoded({extended: false}));
 
-app.use('/admin', AdminRoutes);
+app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing the public folder to grant access css to html
 
+app.use('/admin', AdminRoutes);
 app.use(ShopRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).send('<h1>Page Not Found</h1>');
+    res.status(404).sendFile(Path.join(__dirname, 'views', '404.html'));
 });
 
 /*const server = http.createServer(app);

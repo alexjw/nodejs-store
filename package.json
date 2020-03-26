@@ -24,10 +24,9 @@
   },
   "nodemonConfig": {
     "watch": [
-      "./src/views",
-      "./dist"
+      "./src/views"
     ],
-    "ext": "html, js",
+    "ext": "html, css, js",
     "events": {
       "restart": "xcopy .\\src\\views\\*.html .\\dist\\views /Y /R /F /I /V /E"
     }
