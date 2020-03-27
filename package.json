@@ -31,9 +31,8 @@
     "nodemon": "^2.0.2"
   },
   "nodemonConfig": {
-    "watch": [
-      "./src", "./dist/src", "./dist/app.js"
-    ],
+    "watch": [ "./src", "./dist/src", "./dist/app.js" ],
+    "ignore": [ "./dist/src/views" ],
     "ext": "html, css, js, ejs, ts",
     "events": {
       "restart": "xcopy .\\src\\views\\*.ejs .\\dist\\src\\views /Y /R /F /I /V /E"
