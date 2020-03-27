@@ -1,26 +1,14 @@
 import Express from 'express';
-import Path from "path";
-import {rootDirectory} from "../utils";
+import * as ProductsController from "../controllers/products";
 
 const router = Express.Router();
 
-export const products = [];
+
 
 // /admin/add-product
 
-router.get('/add-product', (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    res.render( 'add-product', {
-        title: 'Add Product',
-        path: '/admin/add-product',
-        formsCSS: true,
-        productCSS: true,
-        activeAddProduct: true
-    });
-});
+router.get('/add-product', ProductsController.addProductGet);
 
-router.post('/add-product', (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    products.push({title: req.body.title})
-    res.redirect('/');
-});
+router.post('/add-product', ProductsController.addProductPost);
 
 export default router;
