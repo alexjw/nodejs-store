@@ -9,15 +9,11 @@ class Product {
 
     save(): void {
         //products.push(this);
+        const products = Product.fetchAll();
+        products.push(this);
         const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
-        Fs.readFile(p, (err, data) => {
-            let products: Product[] = [];
-            if(!err)
-                products = JSON.parse(data.toString()) as Product[];
-            products.push(this);
-            Fs.writeFile(p, JSON.stringify(products), err => {
-                console.log(err);
-            })
+        Fs.writeFile(p, JSON.stringify(products), err => {
+            console.log(err);
         })
     }
 

@@ -2,7 +2,7 @@ import Express from "express";
 import Product from "../models/product";
 
 export const addProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    res.render( 'add-product', {
+    res.render( 'admin/add-product', {
         title: 'Add Product',
         path: '/admin/add-product',
         formsCSS: true,
@@ -16,15 +16,20 @@ export const addProductPost = (req: Express.Request, res: Express.Response, next
     product.save();
     res.redirect('/');
 };
+export const getIndex = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    const products = Product.fetchAll();
+    res.render('shop/index', {
+        products: products,
+        title: 'Shop',
+        path: '/'
+    });
+};
 
 export const getProducts = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const products = Product.fetchAll();
-    res.render('shop', {
+    res.render('admin/products', {
         products: products,
-        title: 'Shop',
-        path: '/',
-        hasProducts: products.length > 0,
-        active: true,
-        productCSS: true
+        title: 'Products',
+        path: '/admin/products'
     });
 };
