@@ -1,6 +1,13 @@
 import Express from "express";
 import Product from "../models/product";
 
+interface bookForm {
+    title: string,
+    imageUrl: string,
+    price: number,
+    description: string
+}
+
 export const addProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     res.render( 'admin/add-product', {
         title: 'Add Product',
@@ -12,7 +19,8 @@ export const addProductGet = (req: Express.Request, res: Express.Response, next:
 };
 
 export const addProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    const product = new Product(req.body.title);
+    const form = req.body as bookForm;
+    const product = new Product(form.title, form.imageUrl, form.description, form.price);
     product.save();
     res.redirect('/');
 };

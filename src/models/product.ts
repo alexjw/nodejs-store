@@ -5,7 +5,7 @@ import Path from 'path'
 import Fs from 'fs'
 
 class Product {
-    constructor(public title: string) { }
+    constructor(public title: string, public imageUrl: string, public description: string, public price: number) { }
 
     save(): void {
         //products.push(this);
