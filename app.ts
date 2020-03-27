@@ -1,14 +1,15 @@
 import Path from "path";
 
-const http = require('http');
-const routes = require('./routes');
 import Express from 'express';
 import {Request, Response, NextFunction} from 'express';
 import BodyParser from 'body-parser';
-import AdminRoutes from "./routes/admin";
-import ShopRoutes from "./routes/shop";
+import AdminRoutes from "./src/routes/admin";
+import ShopRoutes from "./src/routes/shop";
 
 const app = Express();
+
+app.set('view engine', 'ejs');
+app.set('views', './src/views');
 
 app.use(BodyParser.urlencoded({extended: false}));
 
@@ -18,7 +19,7 @@ app.use('/admin', AdminRoutes);
 app.use(ShopRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).sendFile(Path.join(__dirname, 'views', '404.html'));
+    res.status(404).render(Path.join(__dirname, 'views', '404.ejs'), {title: "Not Found"});
 });
 
 /*const server = http.createServer(app);
