@@ -1,6 +1,5 @@
 import Express from "express";
-
-export const products = [];
+import Product from "../models/product";
 
 export const addProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     res.render( 'add-product', {
@@ -13,12 +12,13 @@ export const addProductGet = (req: Express.Request, res: Express.Response, next:
 };
 
 export const addProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    products.push({title: req.body.title});
+    const product = new Product(req.body.title);
+    product.save();
     res.redirect('/');
 };
 
 export const getProducts = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    console.log('shop.js', products);
+    const products = Product.fetchAll();
     res.render('shop', {
         products: products,
         title: 'Shop',
