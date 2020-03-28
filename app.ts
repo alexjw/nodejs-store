@@ -1,10 +1,10 @@
 import Path from "path";
 
 import Express from 'express';
-import * as CodesController from './src/controllers/codes'
+import * as CodesController from './src/controllers/codesController'
 import BodyParser from 'body-parser';
-import AdminRoutes from "./src/routes/admin";
-import ShopRoutes from "./src/routes/shop";
+import AdminRoutes from "./src/routes/adminRoutes";
+import ShopRoutes from "./src/routes/shopRoutes";
 
 const app = Express();
 

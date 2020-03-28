@@ -10,6 +10,11 @@ export const getProducts = (req: Express.Request, res: Express.Response, next: E
     });
 };
 
+export const getProduct = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    const id = req.params.id as string;
+    res.render('shop/product-detail', { product: Product.findById(id), title: 'Product Details', path: '/products'});
+};
+
 export const getIndex = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const products = Product.fetchAll();
     res.render('shop/index', {
@@ -23,6 +28,13 @@ export const getCart  = (req: Express.Request, res: Express.Response, next: Expr
     res.render('shop/cart', {
         title: 'Cart',
         path: '/cart'
+    });
+};
+
+export const getOrders  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    res.render('shop/orders', {
+        title: 'Orders',
+        path: '/orders'
     });
 };
 
