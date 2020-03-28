@@ -28,7 +28,6 @@ export const editProductGet = (req: Express.Request, res: Express.Response, next
 };
 
 export const editProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    console.log('editProductPost');
     const form = req.body as bookForm;
     const product = Product.findById(req.params.id);
     product.title = form.title;
@@ -37,12 +36,15 @@ export const editProductPost = (req: Express.Request, res: Express.Response, nex
     product.description = form.description;
     product.save();
     if(product) {
-        res.render( 'shop/product-detail', {
-            path: '/products',
-            product
-        });
+        res.render( 'shop/product-detail', {product});
     } else
         res.status(404).render('404');
+};
+
+export const deleteProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    Product.delete(req.body.id);
+    const products = Product.fetchAll();
+    res.render( 'admin/products', {products});
 };
 
 export const addProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {

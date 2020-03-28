@@ -44,6 +44,13 @@ class Product {
         //return new Product(result.title, result.imageUrl, result.description, result.price);
         return result;
     }
+
+    static delete(id: string): void {
+        let products = Product.fetchAll();
+        products = products.filter(product => product.id !== id);
+        const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
+        Fs.writeFileSync(p, JSON.stringify(products));
+    }
 }
 
 export default Product;
