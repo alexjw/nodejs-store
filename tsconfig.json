@@ -6,7 +6,6 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "rootDir": "./src",
     "checkJs": true,
     "allowJs": true,
     "esModuleInterop": true,

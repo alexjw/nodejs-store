@@ -9,13 +9,40 @@ interface bookForm {
 }
 
 export const addProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    res.render( 'admin/add-product', {
-        title: 'Add Product',
-        path: '/admin/add-product',
+    res.render( 'admin/edit-product', {
         formsCSS: true,
         productCSS: true,
         activeAddProduct: true
     });
+};
+
+export const editProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    const id = req.params.id;
+    const product = Product.findById(id);
+    if(product) {
+        res.render( 'admin/edit-product', {
+            product
+        });
+    } else
+        res.status(404).render('404');
+};
+
+export const editProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    console.log('editProductPost');
+    const form = req.body as bookForm;
+    const product = Product.findById(req.params.id);
+    product.title = form.title;
+    product.price = form.price;
+    product.imageUrl = form.imageUrl;
+    product.description = form.description;
+    product.save();
+    if(product) {
+        res.render( 'shop/product-detail', {
+            path: '/products',
+            product
+        });
+    } else
+        res.status(404).render('404');
 };
 
 export const addProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
@@ -24,20 +51,10 @@ export const addProductPost = (req: Express.Request, res: Express.Response, next
     product.save();
     res.redirect('/');
 };
-export const getIndex = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    const products = Product.fetchAll();
-    res.render('shop/index', {
-        products: products,
-        title: 'Shop',
-        path: '/'
-    });
-};
 
-export const getProducts = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const allProductsGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const products = Product.fetchAll();
     res.render('admin/products', {
-        products: products,
-        title: 'Products',
-        path: '/admin/products'
+        products: products
     });
 };

@@ -1,10 +1,39 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <%- include('../includes/head.ejs') %>
+    <%- include('../includes/head.ejs', {title: 'Product'}) %>
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <title>Add Product</title>
 </head>
 
 <body>
-<%- include('../includes/navigation.ejs') %>
+<%- include('../includes/navigation.ejs', {path: '/admin/add-product'}) %>
+
+<main>
+    <form class="product-form" action="/admin/<%= locals.product ? 'edit-product/' + product.id : 'add-product'%>" method="POST">
+        <div class="form-control">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" value="<%= locals.product ? product.title : '' %>">
+        </div>
+        <div class="form-control">
+            <label for="title">Image URL</label>
+            <input type="text" name="imageUrl" id="imageUrl" value="<%= locals.product ? product.imageUrl : '' %>">
+        </div>
+        <div class="form-control">
+            <label for="title">Price</label>
+            <input type="number" name="price" id="price" value="<%= locals.product ? product.price : '' %>">
+        </div>
+        <div class="form-control">
+            <label for="title">Description</label>
+            <textarea name="description" id="description"><%= locals.product ? product.description : '' %></textarea>
+        </div>
+
+        <button type="submit"><%= locals.product ? 'Edit Product' : 'Add Product' %></button>
+    </form>
+</main>
 </body>
+
+</html>
