@@ -1,5 +1,6 @@
 import Express from "express";
 import Product from "../models/product";
+import Cart from "../models/cart";
 
 export const getProducts = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const products = Product.fetchAll();
@@ -33,7 +34,9 @@ export const getCart  = (req: Express.Request, res: Express.Response, next: Expr
 
 export const postCart  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const id = req.body.id as string;
+    const product = Product.findById(id);
     console.log('added to cart: ', id);
+    Cart.addProduct(id, product.price);
     res.redirect('/cart');
 };
 
