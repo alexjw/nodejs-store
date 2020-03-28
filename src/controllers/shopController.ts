@@ -31,6 +31,12 @@ export const getCart  = (req: Express.Request, res: Express.Response, next: Expr
     });
 };
 
+export const postCart  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    const id = req.body.id as string;
+    console.log('added to cart: ', id);
+    res.redirect('/cart');
+};
+
 export const getOrders  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     res.render('shop/orders', {
         title: 'Orders',
