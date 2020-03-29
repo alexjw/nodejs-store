@@ -1,36 +1,55 @@
-import Fs from 'fs'
+import fs from 'fs'
 import Path from 'path'
+import Product from "./product";
 
-const cartPath = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'cart.json');
+const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'cart.json');
+
+interface cartDetail {
+    id: string,
+    qty: number
+}
 
 export default class Cart {
-    static addProduct(id, productPrice) {
-        // Fetch the previous cart
-        Fs.readFile(cartPath, (err, fileContent) => {
-            let cart = { products: [], totalPrice: 0 };
-            if (!err) {
-                cart = JSON.parse(fileContent.toString());
-            }
-            // Analyze the cart => Find existing product
-            const existingProductIndex = cart.products.findIndex(
-                prod => prod.id === id
-            );
-            const existingProduct = cart.products[existingProductIndex];
-            let updatedProduct;
-            // Add new product/ increase quantity
-            if (existingProduct) {
-                updatedProduct = { ...existingProduct };
-                updatedProduct.qty = updatedProduct.qty + 1;
-                cart.products = [...cart.products];
-                cart.products[existingProductIndex] = updatedProduct;
-            } else {
-                updatedProduct = { id: id, qty: 1 };
-                cart.products = [...cart.products, updatedProduct];
-            }
-            cart.totalPrice = cart.totalPrice + +productPrice;
-            Fs.writeFile(cartPath, JSON.stringify(cart), err => {
-                console.log(err);
-            });
-        });
+
+    constructor(public products: cartDetail[], public total: number) {
+
+    }
+
+    static decreaseProduct(id: string) {
+        const cart = this.getCart();
+        let cartDetail = cart.products.find(cartDetail => cartDetail.id === id);
+        if(cartDetail.qty === 1)
+            cart.products.filter(cartDetail => cartDetail.id === id);
+        else
+            cartDetail.qty--;
+    }
+
+    static increaseProduct(id: string) {
+        const cart = this.getCart();
+        let cartDetail = cart.products.find(cartDetail => cartDetail.id === id);
+        if(cartDetail)
+            cart.products.push({id: id, qty: 1});
+        else
+            cartDetail.qty++;
+    }
+
+    static deleteProduct(id: string) {
+        const cart = this.getCart();
+        cart.products.filter(cartDetail => cartDetail.id === id);
+    }
+
+    static getCart(): Cart {
+        const fileContent = fs.readFileSync(p);
+        const cartContent = JSON.parse(fileContent.toString()) as Cart;
+        const cartProducts: cartDetail[] = [];
+        cartContent.products.forEach(detail => cartProducts.push(detail));
+        return new Cart(cartProducts, cartContent.total);
+    }
+
+    save(): void {
+        let total = 0;
+        this.products.forEach(cartDetail => total += Product.findById(cartDetail.id).price * cartDetail.qty);
+        this.total = total;
+        fs.writeFileSync(p, JSON.stringify(this));
     }
 }

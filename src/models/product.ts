@@ -2,6 +2,7 @@ import {strict} from "assert";
 
 import Path from 'path'
 import Fs from 'fs'
+const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
 
 class Product {
     id: string;
@@ -19,14 +20,12 @@ class Product {
             this.id = Math.random().toString();
         }
         products.push(this);
-        const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
         Fs.writeFile(p, JSON.stringify(products), err => {
             console.log(err);
         })
     }
 
     static fetchAll(): Product[] {
-        const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
         let data: Buffer;
         try {
             data = Fs.readFileSync(p);
@@ -35,20 +34,18 @@ class Product {
         }
         let result: Product[] = [];
         (JSON.parse(data.toString()) as Product[]).forEach(product => result.push(new Product(product.title, product.imageUrl, product.description, product.price, product.id)))
-        return result;    // may need conversion to object Product
+        return result;
     }
 
     static findById(id: string): Product {
         const products = this.fetchAll();
         let result = products.find(product => product.id === id);
-        //return new Product(result.title, result.imageUrl, result.description, result.price);
         return result;
     }
 
     static delete(id: string): void {
         let products = Product.fetchAll();
         products = products.filter(product => product.id !== id);
-        const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
         Fs.writeFileSync(p, JSON.stringify(products));
     }
 }
