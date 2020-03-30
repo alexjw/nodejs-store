@@ -1,8 +1,7 @@
 import {strict} from "assert";
+import {DB} from "../utils";
+import {Statement} from "sqlite3";
 
-import Path from 'path'
-import Fs from 'fs'
-const p = Path.join(Path.dirname(process.mainModule.filename), 'src', 'data', 'products.json');
 
 class Product {
     id: string;
@@ -11,42 +10,47 @@ class Product {
             this.id = id;
     }
 
-    save(): void {
-        let products = Product.fetchAll();
-        if(this.id) {
-            products = products.filter(product => product.id !== this.id);
-        }
-        else {
-            this.id = Math.random().toString();
-        }
-        products.push(this);
-        Fs.writeFile(p, JSON.stringify(products), err => {
-            console.log(err);
+    save(): Promise<any> {
+        return new Promise<Product[]>(resolve => {
+            const sql = `INSERT INTO products (title, price, description, imageUrl) VALUES ('${this.title}', ${this.price}, '${this.description}', '${this.imageUrl}')`;
+            console.log(sql);
+            DB.exec(sql, (err) => {
+                console.log(err);
+                resolve();
+            });
+        });
+    }
+
+    static fetchAll(): Promise<Product[]> {
+        return new Promise<Product[]>(resolve => {
+            let result: Product[] = [];
+            const x = DB.all('SELECT * FROM products', [], (err, rows) => {
+                rows.forEach(row => {
+                    result.push(new Product(row.title, row.imageUrl, row.description, row.price, row.id));
+                });
+                resolve(result);
+            });
+        });
+
+    }
+
+    static findById(id: string): Promise<Product> {
+        return new Promise<Product>(resolve => {
+            DB.get(`SELECT * FROM products where products.id = ${id}`, (err, row) => {
+                if(row)
+                    resolve(new Product(row.title, row.imageUrl, row.description, row.price, row.id));
+                else
+                    resolve(null);
+            })
         })
     }
 
-    static fetchAll(): Product[] {
-        let data: Buffer;
-        try {
-            data = Fs.readFileSync(p);
-        } catch (e) {
-            return [];
-        }
-        let result: Product[] = [];
-        (JSON.parse(data.toString()) as Product[]).forEach(product => result.push(new Product(product.title, product.imageUrl, product.description, product.price, product.id)))
-        return result;
-    }
-
-    static findById(id: string): Product {
-        const products = this.fetchAll();
-        let result = products.find(product => product.id === id);
-        return result;
-    }
-
-    static delete(id: string): void {
-        let products = Product.fetchAll();
-        products = products.filter(product => product.id !== id);
-        Fs.writeFileSync(p, JSON.stringify(products));
+    static delete(id: string): Promise<any> {
+        return new Promise<Product>(resolve => {
+            DB.exec(`DELETE FROM products WHERE products.id = 5 = ${id}`, (err) => {
+                    resolve();
+            })
+        })
     }
 }
 

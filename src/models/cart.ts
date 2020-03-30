@@ -15,27 +15,25 @@ export default class Cart {
 
     }
 
-    static decreaseProduct(id: string) {
-        const cart = this.getCart();
-        let cartDetail = cart.products.find(cartDetail => cartDetail.id === id);
+    decreaseProduct(id: string) {
+        let cartDetail = this.products.find(cartDetail => cartDetail.id === id);
         if(cartDetail.qty === 1)
-            cart.products.filter(cartDetail => cartDetail.id === id);
+            this.products = this.products.filter(cartDetail => cartDetail.id !== id);
         else
             cartDetail.qty--;
     }
 
-    static increaseProduct(id: string) {
-        const cart = this.getCart();
-        let cartDetail = cart.products.find(cartDetail => cartDetail.id === id);
-        if(cartDetail)
-            cart.products.push({id: id, qty: 1});
-        else
+    increaseProduct(id: string) {
+        let cartDetail = this.products.find(cartDetail => cartDetail.id === id);
+        if (cartDetail) {
             cartDetail.qty++;
+        } else {
+            this.products.push({id: id, qty: 1});
+        }
     }
 
-    static deleteProduct(id: string) {
-        const cart = this.getCart();
-        cart.products.filter(cartDetail => cartDetail.id === id);
+    deleteProduct(id: string) {
+        this.products = this.products.filter(cartDetail => cartDetail.id !== id);
     }
 
     static getCart(): Cart {

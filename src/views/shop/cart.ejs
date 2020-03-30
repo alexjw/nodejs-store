@@ -7,4 +7,23 @@
 
 <body>
     <%- include('../includes/navigation.ejs', {path: '/cart'}) %>
+
+    <main>
+        <% if (cart.products.length > 0) { %>
+            <ul>
+                <% cart.products.forEach(cartDetail => { %>
+                    <% let product = cartProducts.find(product => product.id === cartDetail.id) %>
+                    <li>
+                        <p><%= product.title %> (<%= cartDetail.qty %>)</p>
+                        <form action="/cart-delete-item" method="POST">
+                            <input type="hidden" value="<%= product.id %>" name="id">
+                            <button class="btn" type="submit">Delete</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <h1>No Products in Cart!</h1>
+        <% } %>
+    </main>
 </body>
