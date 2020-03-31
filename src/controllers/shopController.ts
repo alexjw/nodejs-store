@@ -3,14 +3,14 @@ import Product from "../models/product";
 import Cart from "../models/cart";
 
 export const productsGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    Product.fetchAll().then((products) =>
+    Product.findAll().then((products) =>
         res.render('shop/product-list', { products: products })
     );
 };
 
 export const productGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const id = req.params.id as string;
-    Product.findById(id).then((product) => {
+    Product.findByPk(id).then((product) => {
         if(product)
             res.render('shop/product-detail', { product });
         else
@@ -19,11 +19,10 @@ export const productGet = (req: Express.Request, res: Express.Response, next: Ex
 };
 
 export const indexGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    Product.fetchAll().then((products) =>  res.render('shop/index', { products: products }) );
+    Product.findAll().then((products) =>  res.render('shop/index', { products: products }) );
 };
 
 export const cartGet  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    const cartProducts: Product[] = [];
     const cart = Cart.getCart();
 };
 
@@ -38,8 +37,7 @@ export const cartDeletePost  = (req: Express.Request, res: Express.Response, nex
 export const addToCartPost  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const id = req.body.id as string;
     const cart = Cart.getCart();
-    const product = Product.findById(id);
-    console.log('added to cart: ', id);
+    const product = Product.findByPk(id);
     cart.increaseProduct(id);
     cart.save();
     res.redirect('/cart');
