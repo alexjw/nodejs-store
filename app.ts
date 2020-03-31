@@ -16,8 +16,11 @@ TheProduct.belongsTo(TheUser, { constraints: true, onDelete: 'CASCADE' });
 TheUser.hasMany(TheProduct);
 TheUser.hasOne(TheCart);
 TheCart.belongsTo(TheUser);
+TheCart.hasMany(TheCartItem , { as: 'cartItems' })
 TheCart.belongsToMany(TheProduct, {through: TheCartItem});
 TheProduct.belongsToMany(TheCart, {through: TheCartItem});
+//TheProduct.hasMany(TheCartItem);
+TheCartItem.belongsTo(TheProduct);
 
 const app = Express();
 
