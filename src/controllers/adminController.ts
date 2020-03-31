@@ -44,14 +44,14 @@ export const editProductPost = (req: Express.Request, res: Express.Response, nex
 };
 
 export const deleteProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    TheProduct.destroy(req.body.id).then(() => {
+    TheProduct.findByPk(req.body.id).then(product => product.destroy()).then(() => {
         TheProduct.findAll().then(products => res.render( 'admin/products', {products}))
     });
 };
 
 export const addProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
-    TheProduct.create({title, imageUrl, description, price}).then(result => res.redirect('/'));
+    TheProduct.create({title, imageUrl, description, price}).then(result => res.redirect('admin/products'));
 };
 
 export const allProductsGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
