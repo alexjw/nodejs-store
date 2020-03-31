@@ -1,6 +1,8 @@
 import Express, {Request, Response, NextFunction} from "express";
 import Product from "../models/product";
 import Cart from "../models/cart";
+import {RequestWithUser} from "../utils";
+import TheProduct from "../models/product";
 
 export const productsGet = (req: Request, res: Response, next: NextFunction) => {
     Product.findAll().then((products) =>
@@ -22,8 +24,8 @@ export const indexGet = (req: Request, res: Response, next: NextFunction) => {
     Product.findAll().then((products) =>  res.render('shop/index', { products: products }) );
 };
 
-export const cartGet  = (req: Request, res: Response, next: NextFunction) => {
-    const cart = Cart.getCart();
+export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    req.user.getCart().then(cart => res.render('shop/cart', {cart}));
 };
 
 export const cartDeletePost  = (req: Request, res: Response, next: NextFunction) => {

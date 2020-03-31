@@ -17,7 +17,7 @@ export const addProductGet = (req: Request, res: Response, next: NextFunction) =
     });
 };
 
-export const editProductGet = (req: Request, res: Response, next: NextFunction) => {
+export const editProductGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.params.id;
     TheProduct.findByPk(id).then(product => {
         if(product) {
