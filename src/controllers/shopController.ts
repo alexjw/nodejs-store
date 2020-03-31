@@ -32,8 +32,9 @@ export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction
         });
 };
 
-export const cartDeletePost  = (req: Request, res: Response, next: NextFunction) => {
+export const cartDeletePost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.body.id;
+    TheCartItem.destroy({where: {id}}).then(() => res.redirect('/cart'));
 };
 
 export const addToCartPost  = (req: RequestWithUser, res: Response, next: NextFunction) => {

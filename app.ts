@@ -10,6 +10,8 @@ import TheProduct from "./src/models/product";
 import TheUser, {User} from "./src/models/user";
 import TheCart from "./src/models/cart";
 import TheCartItem from "./src/models/cart-item";
+import TheOrder from "./src/models/order";
+import TheOrderItem from "./src/models/order-item";
 
 // Asociations
 TheProduct.belongsTo(TheUser, { constraints: true, onDelete: 'CASCADE' });
@@ -19,8 +21,10 @@ TheCart.belongsTo(TheUser);
 TheCart.hasMany(TheCartItem , { as: 'cartItems' })
 TheCart.belongsToMany(TheProduct, {through: TheCartItem});
 TheProduct.belongsToMany(TheCart, {through: TheCartItem});
-//TheProduct.hasMany(TheCartItem);
 TheCartItem.belongsTo(TheProduct);
+TheOrder.belongsTo(TheUser);
+TheUser.hasMany(TheOrder);
+TheOrder.belongsToMany(TheProduct, {through: TheOrderItem});
 
 const app = Express();
 
