@@ -1,14 +1,14 @@
-import Express from "express";
+import Express, {Request, Response, NextFunction} from "express";
 import Product from "../models/product";
 import Cart from "../models/cart";
 
-export const productsGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const productsGet = (req: Request, res: Response, next: NextFunction) => {
     Product.findAll().then((products) =>
         res.render('shop/product-list', { products: products })
     );
 };
 
-export const productGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const productGet = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id as string;
     Product.findByPk(id).then((product) => {
         if(product)
@@ -18,15 +18,15 @@ export const productGet = (req: Express.Request, res: Express.Response, next: Ex
     });
 };
 
-export const indexGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const indexGet = (req: Request, res: Response, next: NextFunction) => {
     Product.findAll().then((products) =>  res.render('shop/index', { products: products }) );
 };
 
-export const cartGet  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const cartGet  = (req: Request, res: Response, next: NextFunction) => {
     const cart = Cart.getCart();
 };
 
-export const cartDeletePost  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const cartDeletePost  = (req: Request, res: Response, next: NextFunction) => {
     const id = req.body.id;
     const cart = Cart.getCart();
     cart.deleteProduct(id);
@@ -34,7 +34,7 @@ export const cartDeletePost  = (req: Express.Request, res: Express.Response, nex
     res.redirect('/cart');
 };
 
-export const addToCartPost  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const addToCartPost  = (req: Request, res: Response, next: NextFunction) => {
     const id = req.body.id as string;
     const cart = Cart.getCart();
     const product = Product.findByPk(id);
@@ -43,10 +43,10 @@ export const addToCartPost  = (req: Express.Request, res: Express.Response, next
     res.redirect('/cart');
 };
 
-export const ordersGet  = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const ordersGet  = (req: Request, res: Response, next: NextFunction) => {
     res.render('shop/orders');
 };
 
-export const checkoutGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const checkoutGet = (req: Request, res: Response, next: NextFunction) => {
     res.render('shop/checkout');
 };

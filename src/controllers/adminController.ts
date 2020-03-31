@@ -1,5 +1,6 @@
-import Express from "express";
+import {Request, Response, NextFunction} from "express";
 import TheProduct from "../models/product";
+import {RequestWithUser} from "../utils";
 
 interface bookForm {
     title: string,
@@ -8,7 +9,7 @@ interface bookForm {
     description: string
 }
 
-export const addProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const addProductGet = (req: Request, res: Response, next: NextFunction) => {
     res.render( 'admin/edit-product', {
         formsCSS: true,
         productCSS: true,
@@ -16,7 +17,7 @@ export const addProductGet = (req: Express.Request, res: Express.Response, next:
     });
 };
 
-export const editProductGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const editProductGet = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     TheProduct.findByPk(id).then(product => {
         if(product) {
@@ -28,7 +29,7 @@ export const editProductGet = (req: Express.Request, res: Express.Response, next
     });
 };
 
-export const editProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const editProductPost = (req: Request, res: Response, next: NextFunction) => {
     const form = req.body as bookForm;
     TheProduct.findByPk(req.params.id).then((value) => {
         const product = value;
@@ -43,18 +44,20 @@ export const editProductPost = (req: Express.Request, res: Express.Response, nex
     });
 };
 
-export const deleteProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const deleteProductPost = (req: Request, res: Response, next: NextFunction) => {
     TheProduct.findByPk(req.body.id).then(product => product.destroy()).then(() => {
         TheProduct.findAll().then(products => res.render( 'admin/products', {products}))
     });
 };
 
-export const addProductPost = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+
+export const addProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
-    TheProduct.create({title, imageUrl, description, price}).then(result => res.redirect('admin/products'));
+    req.user.createProduct({title, imageUrl, description, price, userId: req.user.id}).then(() => res.redirect('admin/products'));
+    // TheProduct.create({title, imageUrl, description, price, userId: req.user.id}).then(() => res.redirect('admin/products'));
 };
 
-export const allProductsGet = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const allProductsGet = (req: Request, res: Response, next: NextFunction) => {
     TheProduct.findAll().then(products =>
         res.render('admin/products', { products: products })
     );

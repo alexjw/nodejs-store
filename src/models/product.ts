@@ -2,7 +2,7 @@ import {TheSequelize} from "../utils";
 import { Model, DataTypes, BuildOptions } from 'sequelize';
 
 // We need to declare an interface for our model that is basically what our class would be
-interface Product extends Model {
+export interface Product extends Model {
     readonly id: number;
     title: string;
     price: number;
