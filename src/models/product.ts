@@ -1,8 +1,23 @@
-import {TheSequelize} from "../utils";
-import { Model, DataTypes, BuildOptions } from 'sequelize';
+import {getDb} from "../utils";
 
-// We need to declare an interface for our model that is basically what our class would be
-export interface Product extends Model {
+const COLLECTION = 'products';
+
+class Product {
+    public _id;
+
+    constructor(public title: string,
+                public price: number,
+                public description: string,
+                public imageUrl: string) { }
+
+    save() {
+        return getDb().collection(COLLECTION).insertOne(this);
+    }
+}
+
+export default Product;
+
+/*export interface Product extends Model {
     readonly id: number;
     title: string;
     price: number;
@@ -10,7 +25,6 @@ export interface Product extends Model {
     description: string;
 }
 
-// Need to declare the static model so `findOne` etc. use correct types.
 type ProductStatic = typeof Model & {
     new (values?: object, options?: BuildOptions): Product;
 }
@@ -41,4 +55,4 @@ const TheProduct = <ProductStatic>TheSequelize.define('product',
         }
     });
 
-export default TheProduct;
+export default TheProduct;*/

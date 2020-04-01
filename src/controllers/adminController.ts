@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import TheProduct from "../models/product";
 import {RequestWithUser} from "../utils";
+import Product from "../models/product";
 
 interface bookForm {
     title: string,
@@ -18,7 +19,7 @@ export const addProductGet = (req: Request, res: Response, next: NextFunction) =
 };
 
 export const editProductGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const id = req.params.id;
+    /*const id = req.params.id;
     TheProduct.findByPk(id).then(product => {
         if(product) {
             res.render( 'admin/edit-product', {
@@ -26,11 +27,11 @@ export const editProductGet = (req: RequestWithUser, res: Response, next: NextFu
             });
         } else
             res.status(404).render('404');
-    });
+    });*/
 };
 
 export const editProductPost = (req: Request, res: Response, next: NextFunction) => {
-    const form = req.body as bookForm;
+    /*const form = req.body as bookForm;
     TheProduct.findByPk(req.params.id).then((value) => {
         const product = value;
         if(product) {
@@ -41,24 +42,25 @@ export const editProductPost = (req: Request, res: Response, next: NextFunction)
             product.save().then(() => res.render( 'shop/product-detail', {product}));
         } else
             res.status(404).render('404');
-    });
+    });*/
 };
 
 export const deleteProductPost = (req: Request, res: Response, next: NextFunction) => {
-    TheProduct.findByPk(req.body.id).then(product => product.destroy()).then(() => {
+    /*TheProduct.findByPk(req.body.id).then(product => product.destroy()).then(() => {
         TheProduct.findAll().then(products => res.render( 'admin/products', {products}))
-    });
+    });*/
 };
 
 
 export const addProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
+    let product = new Product(title, price, description, imageUrl);
+    product.save().then(result => console.log(result));
     req.user.createProduct({title, imageUrl, description, price, userId: req.user.id}).then(() => res.redirect('admin/products'));
-    // TheProduct.create({title, imageUrl, description, price, userId: req.user.id}).then(() => res.redirect('admin/products'));
 };
 
 export const allProductsGet = (req: Request, res: Response, next: NextFunction) => {
-    TheProduct.findAll().then(products =>
+    /*TheProduct.findAll().then(products =>
         res.render('admin/products', { products: products })
-    );
+    );*/
 };

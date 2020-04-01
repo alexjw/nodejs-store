@@ -17,6 +17,7 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "express-handlebars": "^4.0.0",
+    "mongodb": "3.5.4",
     "pug": "^2.0.4",
     "sequelize": "^5.21.5",
     "sqlite3": "^4.1.1",
@@ -33,6 +34,7 @@
     "@types/sequelize": "^4.28.8",
     "@types/validator": "^12.0.1",
     "@types/bluebird": "^3.5.30",
+    "@types/mongodb": "3.5.4",
     "copyfiles": "^2.2.0",
     "nodemon": "^2.0.2"
   },
