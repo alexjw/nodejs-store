@@ -23,10 +23,6 @@ export const productGet = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export const indexGet = (req: Request, res: Response, next: NextFunction) => {
-    Product.findAll().then((products) =>  res.render('shop/index', { products: products }) );
-};
-
 export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     req.user.getCart({include: [{model: TheCartItem, as: 'cartItems', include: [ {model: Product, as: 'product'} ]}]})
         .then(cart => {

@@ -1,5 +1,4 @@
 import {Request, Response, NextFunction} from "express";
-import TheProduct from "../models/product";
 import {RequestWithUser} from "../utils";
 import Product from "../models/product";
 
@@ -19,21 +18,20 @@ export const addProductGet = (req: Request, res: Response, next: NextFunction) =
 };
 
 export const editProductGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    /*const id = req.params.id;
-    TheProduct.findByPk(id).then(product => {
+    const id = req.params.id;
+    Product.findById(id).then(product => {
         if(product) {
             res.render( 'admin/edit-product', {
                 product
             });
         } else
             res.status(404).render('404');
-    });*/
+    });
 };
 
 export const editProductPost = (req: Request, res: Response, next: NextFunction) => {
-    /*const form = req.body as bookForm;
-    TheProduct.findByPk(req.params.id).then((value) => {
-        const product = value;
+    const form = req.body as bookForm;
+    Product.findById(req.params.id).then((product) => {
         if(product) {
             product.title = form.title;
             product.price = form.price;
@@ -42,7 +40,7 @@ export const editProductPost = (req: Request, res: Response, next: NextFunction)
             product.save().then(() => res.render( 'shop/product-detail', {product}));
         } else
             res.status(404).render('404');
-    });*/
+    });
 };
 
 export const deleteProductPost = (req: Request, res: Response, next: NextFunction) => {
@@ -59,7 +57,7 @@ export const addProductPost = (req: RequestWithUser, res: Response, next: NextFu
 };
 
 export const allProductsGet = (req: Request, res: Response, next: NextFunction) => {
-    TheProduct.fetchAll().then(products =>
+    Product.fetchAll().then(products =>
         res.render('admin/products', { products: products })
     );
 };

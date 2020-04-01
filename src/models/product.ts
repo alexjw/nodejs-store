@@ -4,15 +4,17 @@ import {ObjectId} from 'mongodb'
 const COLLECTION = 'products';
 
 class Product {
-    public _id;
 
     constructor(public title: string,
                 public price: number,
                 public description: string,
-                public imageUrl: string) { }
+                public imageUrl: string,
+                public _id?: string) { }
 
     save() {
-        return getDb().collection(COLLECTION).insertOne(this);
+        if(this._id)
+            return getDb().collection(COLLECTION).insertOne(this);
+        return getDb().collection(COLLECTION).updateOne({_id: new ObjectId(this._id)}, {$set: this});
     }
 
     static fetchAll() {
@@ -20,9 +22,7 @@ class Product {
     }
 
     static findById(id: string) {
-        ObjectId
-
-        return getDb().collection(COLLECTION).find({_id: new ObjectId(id)}).next()
+        return getDb().collection(COLLECTION).find({_id: new ObjectId(id)}).next().then(product => new Product(product.title, product.price, product.description, product.imageUrl, id))
     }
 }
 
