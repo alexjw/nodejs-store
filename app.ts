@@ -22,11 +22,12 @@ TheCart.hasMany(TheCartItem , { as: 'cartItems' });
 TheCart.belongsToMany(TheProduct, {through: TheCartItem});
 TheProduct.belongsToMany(TheCart, {through: TheCartItem});
 TheCartItem.belongsTo(TheProduct);
-TheCartItem.belongsTo(TheCart);
-TheOrder.belongsTo(TheUser);
-TheUser.hasMany(TheOrder);
-TheOrder.belongsToMany(TheProduct, {through: TheOrderItem});
 TheOrderItem.belongsTo(TheProduct);
+TheCartItem.belongsTo(TheCart);
+TheOrderItem.belongsTo(TheOrder);
+TheOrder.belongsTo(TheUser);
+TheUser.hasMany(TheOrder, { as: 'orders'});
+TheOrder.belongsToMany(TheProduct, {through: TheOrderItem});
 TheOrder.hasMany(TheOrderItem, { as: 'orderItems' });
 
 const app = Express();

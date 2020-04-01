@@ -81,8 +81,9 @@ export const addToCartPost  = (req: RequestWithUser, res: Response, next: NextFu
         }).then((x) => res.redirect('/cart'))
 };
 
-export const ordersGet  = (req: Request, res: Response, next: NextFunction) => {
-    res.render('shop/orders');
+export const ordersGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    req.user.getOrders({include: [{model: TheOrderItem, as: 'orderItems', include: [{model: TheProduct, as: 'product'}]}]})
+        .then(orders => res.render('shop/orders', {orders}));
 };
 
 export const checkoutGet = (req: Request, res: Response, next: NextFunction) => {

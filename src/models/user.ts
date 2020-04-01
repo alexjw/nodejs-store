@@ -21,6 +21,7 @@ export interface User extends Model {
     createProduct: HasManyCreateAssociationMixin<Product>;
     createOrder: HasManyCreateAssociationMixin<Order>;
     getProducts: HasManyGetAssociationsMixin<Product>;
+    getOrders: HasManyGetAssociationsMixin<Order>;
     getCart: HasOneGetAssociationMixin<Cart>;
 }
 

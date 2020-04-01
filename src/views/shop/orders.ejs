@@ -8,5 +8,22 @@
 
 <body>
 <%- include('../includes/navigation.ejs', {path: '/orders'}) %>
-Orders Page
+    <main>
+        <% if (orders.length <= 0) { %>
+            <h1>Nothing there!</h1>
+        <% } else { %>
+            <ul>
+                <% orders.forEach(order => { %>
+                    <li>
+                        <h1># <%= order.id %></h1>
+                        <ul>
+                            <% order.orderItems.forEach(item => { %>
+                                <li><%= item.product.title %> (<%= item.product.quantity %>)</li>
+                            <% }); %>
+                        </ul>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } %>
+    </main>
 </body>
