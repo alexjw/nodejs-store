@@ -1,4 +1,5 @@
 import {getDb} from "../utils";
+import {ObjectId} from 'mongodb'
 
 const COLLECTION = 'products';
 
@@ -12,6 +13,16 @@ class Product {
 
     save() {
         return getDb().collection(COLLECTION).insertOne(this);
+    }
+
+    static fetchAll() {
+        return getDb().collection(COLLECTION).find().toArray();
+    }
+
+    static findById(id: string) {
+        ObjectId
+
+        return getDb().collection(COLLECTION).find({_id: new ObjectId(id)}).next()
     }
 }
 

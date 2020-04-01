@@ -8,14 +8,14 @@ import TheOrder, {Order} from "../models/order";
 import TheOrderItem, {OrderItem} from "../models/order-item";
 
 export const productsGet = (req: Request, res: Response, next: NextFunction) => {
-    Product.findAll().then((products) =>
+    Product.fetchAll().then((products) =>
         res.render('shop/product-list', { products: products })
     );
 };
 
 export const productGet = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id as string;
-    Product.findByPk(id).then((product) => {
+    Product.findById(id).then((product) => {
         if(product)
             res.render('shop/product-detail', { product });
         else

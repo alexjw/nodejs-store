@@ -6,7 +6,7 @@ import mongodb from 'mongodb'
 let db: mongodb.Db;
 
 export const mongoConnect = () => {
-    return mongodb.connect('mongodb+srv://user:nF6ouPL9lcB8jZ5x@freecodecamp-w89rl.gcp.mongodb.net/test?retryWrites=true&w=majority')
+    return mongodb.connect('mongodb+srv://user:nF6ouPL9lcB8jZ5x@freecodecamp-w89rl.gcp.mongodb.net/node-schwarzmuller-course?retryWrites=true&w=majority')
         .then(x => {db = x.db(); return x})
 };
 

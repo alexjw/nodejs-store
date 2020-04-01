@@ -21,7 +21,7 @@ app.use(BodyParser.urlencoded({extended: false}));
 app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing the public folder to grant access css to html
 
 app.use('/admin', AdminRoutes);
-//app.use(ShopRoutes);
+app.use(ShopRoutes);
 
 app.use(CodesController.code404);
 

@@ -9,10 +9,10 @@ const router = Express.Router();
 
 router.get('/add-product', AdminController.addProductGet);
 router.post('/add-product', AdminController.addProductPost);
-//router.get('/edit-product/:id', AdminController.editProductGet);
-//router.post('/edit-product/:id', AdminController.editProductPost);
-//router.post('/delete-product', AdminController.deleteProductPost);
-//router.get('/products', AdminController.allProductsGet);
+router.get('/edit-product/:id', AdminController.editProductGet);
+router.post('/edit-product/:id', AdminController.editProductPost);
+router.post('/delete-product', AdminController.deleteProductPost);
+router.get('/products', AdminController.allProductsGet);
 
 
 export default router;
