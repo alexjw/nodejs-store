@@ -7,6 +7,7 @@ export interface CartItem extends Model {
     readonly id: number;
     quantity: number;
     getProduct: HasOneGetAssociationMixin<Product>;
+    productId: HasOneGetAssociationMixin<Product>;
 }
 
 // Need to declare the static model so `findOne` etc. use correct types.

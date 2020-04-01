@@ -18,13 +18,16 @@ TheProduct.belongsTo(TheUser, { constraints: true, onDelete: 'CASCADE' });
 TheUser.hasMany(TheProduct);
 TheUser.hasOne(TheCart);
 TheCart.belongsTo(TheUser);
-TheCart.hasMany(TheCartItem , { as: 'cartItems' })
+TheCart.hasMany(TheCartItem , { as: 'cartItems' });
 TheCart.belongsToMany(TheProduct, {through: TheCartItem});
 TheProduct.belongsToMany(TheCart, {through: TheCartItem});
 TheCartItem.belongsTo(TheProduct);
+TheCartItem.belongsTo(TheCart);
 TheOrder.belongsTo(TheUser);
 TheUser.hasMany(TheOrder);
 TheOrder.belongsToMany(TheProduct, {through: TheOrderItem});
+TheOrderItem.belongsTo(TheProduct);
+TheOrder.hasMany(TheOrderItem, { as: 'orderItems' });
 
 const app = Express();
 

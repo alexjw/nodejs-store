@@ -5,7 +5,7 @@ import {
     BuildOptions,
     HasManyGetAssociationsMixin,
     HasManyCreateAssociationMixin,
-    HasManyAddAssociationMixin
+    HasManyAddAssociationMixin, HasManySetAssociationsMixin
 } from 'sequelize';
 import {Product} from "./product";
 import {CartItem} from "./cart-item";
@@ -15,7 +15,8 @@ export interface Cart extends Model {
     readonly id: number;
     getProducts: HasManyGetAssociationsMixin<Product>
     addProduct: HasManyAddAssociationMixin<Product, number>
-    getItems: HasManyGetAssociationsMixin<CartItem>
+    getCartItems: HasManyGetAssociationsMixin<CartItem>
+    setCartItems: HasManySetAssociationsMixin<CartItem, number>
 }
 
 // Need to declare the static model so `findOne` etc. use correct types.

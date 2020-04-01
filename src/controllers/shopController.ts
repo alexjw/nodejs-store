@@ -4,6 +4,8 @@ import TheCart, {Cart} from "../models/cart";
 import {RequestWithUser} from "../utils";
 import TheProduct from "../models/product";
 import TheCartItem from "../models/cart-item";
+import TheOrder, {Order} from "../models/order";
+import TheOrderItem, {OrderItem} from "../models/order-item";
 
 export const productsGet = (req: Request, res: Response, next: NextFunction) => {
     Product.findAll().then((products) =>
@@ -29,6 +31,25 @@ export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction
     req.user.getCart({include: [{model: TheCartItem, as: 'cartItems', include: [ {model: Product, as: 'product'} ]}]})
         .then(cart => {
             res.render('shop/cart', {cart})
+        });
+};
+
+export const createOrderPost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    let order: Order;
+    let cart: Cart;
+    req.user.createOrder()
+        .then(orderf => order = orderf)
+        .then(() => req.user.getCart())
+        .then(cartf => {
+            cart = cartf;
+            return cart.getCartItems();
+        })
+        .then(cartItems => {
+            cartItems.map(item => { return TheOrderItem.create({productId: item.productId, quantity: item.quantity, orderId: order.id}); });
+        })
+        .then(() => {
+            cart.setCartItems(null);
+            res.render('shop/orders')
         });
 };
 
