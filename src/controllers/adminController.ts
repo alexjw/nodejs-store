@@ -52,7 +52,7 @@ export const deleteProductPost = (req: Request, res: Response, next: NextFunctio
 
 export const addProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
-    let product = new Product(title, price, description, imageUrl);
+    let product = new Product(title, price, description, imageUrl, req.user._id);
     product.save().then(product => res.redirect('admin/products'));
 };
 

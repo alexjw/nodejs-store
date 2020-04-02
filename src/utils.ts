@@ -1,6 +1,6 @@
 import Path from 'path'
 import {Request} from "express";
-import {User} from "./models/user";
+import User from "./models/user";
 import mongodb from 'mongodb'
 
 let db: mongodb.Db;

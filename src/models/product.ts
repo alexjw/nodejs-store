@@ -9,6 +9,7 @@ class Product {
                 public price: number,
                 public description: string,
                 public imageUrl: string,
+                public userId?: ObjectId,
                 public _id?: ObjectId) { }
 
     save(): Promise<any> {
@@ -28,7 +29,7 @@ class Product {
     static findById(id: string) {
         return getDb().collection(COLLECTION)
             .findOne({_id: new ObjectId(id)})
-            .then(product => new Product(product.title, product.price, product.description, product.imageUrl, new ObjectId(id)))
+            .then(product => new Product(product.title, product.price, product.description, product.imageUrl, product.userId, new ObjectId(id)))
     }
 }
 
