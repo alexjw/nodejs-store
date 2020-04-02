@@ -5,16 +5,34 @@ import * as CodesController from './src/controllers/codesController'
 import BodyParser from 'body-parser';
 import AdminRoutes from "./src/routes/adminRoutes";
 import ShopRoutes from "./src/routes/shopRoutes";
-import {mongoConnect, RequestWithUser} from "./src/utils";
+import {getDb, mongoConnect, RequestWithUser} from "./src/utils";
+import User from "./src/models/user";
+import {ObjectId} from "mongodb";
 
 const app = Express();
 
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
-/*app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
-    TheUser.findByPk(1).then(user => {req.user = user; next()})
-});*/
+app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
+    getDb().collection('users').findOne({})
+        .then(user => {
+            if(user) {
+                req.user = user;
+                next()
+            }
+            else {
+                const newUser = new User('user', 'aaa@gmail.com');
+                getDb().collection('users')
+                    .insertOne(newUser)
+                    .then(user => {
+                        newUser._id = new ObjectId(user.insertedId.toString());
+                        req.user = newUser;
+                        next();
+                    })
+            }
+        })
+});
 
 app.use(BodyParser.urlencoded({extended: false}));
 

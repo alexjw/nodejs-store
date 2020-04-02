@@ -44,16 +44,16 @@ export const editProductPost = (req: Request, res: Response, next: NextFunction)
 };
 
 export const deleteProductPost = (req: Request, res: Response, next: NextFunction) => {
-    /*TheProduct.findByPk(req.body.id).then(product => product.destroy()).then(() => {
-        TheProduct.findAll().then(products => res.render( 'admin/products', {products}))
-    });*/
+    Product.delete(req.body.id).then(() => {
+        Product.fetchAll().then(products => res.render( 'admin/products', {products}))
+    });
 };
 
 
 export const addProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
     let product = new Product(title, price, description, imageUrl);
-    product.save().then(product => {console.log(product);res.redirect('admin/products')});
+    product.save().then(product => res.redirect('admin/products'));
 };
 
 export const allProductsGet = (req: Request, res: Response, next: NextFunction) => {

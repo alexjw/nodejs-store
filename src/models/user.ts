@@ -1,49 +1,22 @@
-import {TheSequelize} from "../utils";
-import {
-    Model,
-    DataTypes,
-    BuildOptions,
-    HasManyCreateAssociationMixin,
-    HasManyGetAssociationsMixin,
-    HasOneGetAssociationMixin
-} from 'sequelize';
-import ts from "typescript/lib/tsserverlibrary";
-import Project = ts.server.Project;
-import {Product} from "./product";
-import {Cart} from "./cart";
-import {Order} from "./order";
+import {getDb} from "../utils";
+import {ObjectId} from "mongodb";
 
-// We need to declare an interface for our model that is basically what our class would be
-export interface User extends Model {
-    readonly id: number;
-    name: string;
-    email: string;
-    createProduct: HasManyCreateAssociationMixin<Product>;
-    createOrder: HasManyCreateAssociationMixin<Order>;
-    getProducts: HasManyGetAssociationsMixin<Product>;
-    getOrders: HasManyGetAssociationsMixin<Order>;
-    getCart: HasOneGetAssociationMixin<Cart>;
+const COLLECTION = 'users';
+
+class User {
+    constructor(public username: string, public email: string, public _id?: ObjectId) { }
+
+    save() {
+        if(this._id)
+            return getDb().collection(COLLECTION).updateOne({_id: this._id}, {$set: this});
+        return getDb().collection(COLLECTION).insertOne(this);
+    }
+
+    static findById(id: string) {
+        return getDb().collection(COLLECTION)
+            .findOne({_id: new ObjectId(id)})
+            .then(user => new User(user.username, user.email, new ObjectId(id)))
+    }
 }
 
-// Need to declare the static model so `findOne` etc. use correct types.
-type ProductStatic = typeof Model & {
-    new (values?: object, options?: BuildOptions): User;
-}
-
-
-const TheUser = <ProductStatic>TheSequelize.define('user',
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            allowNull: false,
-            primaryKey: true
-        },
-        name: DataTypes.STRING,
-        email: {
-            type: DataTypes.STRING,
-            defaultValue: ''
-        }
-    });
-
-export default TheUser;
+export default User;

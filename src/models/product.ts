@@ -9,12 +9,16 @@ class Product {
                 public price: number,
                 public description: string,
                 public imageUrl: string,
-                public _id?: string) { }
+                public _id?: ObjectId) { }
 
-    save() {
+    save(): Promise<any> {
         if(this._id)
-            return getDb().collection(COLLECTION).insertOne(this);
-        return getDb().collection(COLLECTION).updateOne({_id: new ObjectId(this._id)}, {$set: this});
+            return getDb().collection(COLLECTION).updateOne({_id: this._id}, {$set: this});
+        return getDb().collection(COLLECTION).insertOne(this);
+    }
+
+    static delete(id: string) {
+        return getDb().collection(COLLECTION).deleteOne({_id: new ObjectId(id)})
     }
 
     static fetchAll() {
@@ -22,7 +26,9 @@ class Product {
     }
 
     static findById(id: string) {
-        return getDb().collection(COLLECTION).find({_id: new ObjectId(id)}).next().then(product => new Product(product.title, product.price, product.description, product.imageUrl, id))
+        return getDb().collection(COLLECTION)
+            .findOne({_id: new ObjectId(id)})
+            .then(product => new Product(product.title, product.price, product.description, product.imageUrl, new ObjectId(id)))
     }
 }
 
