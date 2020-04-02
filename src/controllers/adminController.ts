@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from "express";
 import {RequestWithUser} from "../utils";
-import Product, {CreateProductInput} from "../models/product";
+import Product, {ProductInput} from "../models/product";
 
 interface bookForm {
     title: string,
@@ -52,7 +52,7 @@ export const deleteProductPost = (req: Request, res: Response, next: NextFunctio
 
 export const addProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
-    let product = new Product({title, price, description, imageUrl});
+    let product = new Product({title, price, description, imageUrl, userId: req.user.id});
     product.save().then(product => res.redirect('/admin/products'));
 };
 

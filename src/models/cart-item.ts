@@ -1,14 +1,23 @@
-import Product from "./product";
+import mongoose, {Schema, Document} from 'mongoose'
+import Product, {ProductInterface} from "./product";
 
-class CartItem {
-    quantity: number;
-
-    constructor(public product: Product, quantity?: number) {
-        if(quantity)
-            this.quantity = quantity;
-        else
-            this.quantity = 1;
+export const CartItemSchema = new Schema(
+    {
+        product: Schema.Types.ObjectId,
+        quantity: Number
     }
+);
+
+export interface CartItemInterface extends Document {
+    product: ProductInterface['_id'],
+    quantity: number
 }
+
+export interface CartItemInput {
+    product: CartItemInterface['product'];
+    quantity: CartItemInterface['quantity'];
+}
+
+const CartItem = mongoose.model<CartItemInterface>('cart-item', CartItemSchema);
 
 export default CartItem;

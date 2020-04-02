@@ -1,32 +1,37 @@
-import {getDb} from "../utils";
-import {ObjectId} from "mongodb";
-import Product from "./product";
-import Cart from "./cart";
+import mongoose, {Document, Schema} from 'mongoose'
+import CartItem, {CartItemInterface} from "./cart-item";
+import Cart, {CartInterface, CartSchema} from "./cart";
+import {ProductInterface} from "./product";
 
-const COLLECTION = 'users';
-
-class User {
-    cart: Cart;
-
-    constructor(public username: string, public email: string, public _id?: ObjectId, cart?: any) {
-        if(cart) {
-            this.cart = new Cart();
-        }
-        else
-            this.cart = new Cart();
-    }
-
-    save() {
-        if(this._id)
-            return getDb().collection(COLLECTION).updateOne({_id: this._id}, {$set: this});
-        return getDb().collection(COLLECTION).insertOne(this);
-    }
-
-    static findById(id: string) {
-        return getDb().collection(COLLECTION)
-            .findOne({_id: new ObjectId(id)})
-            .then(user => new User(user.username, user.email, new ObjectId(id)))
-    }
+export interface UserInterface extends Document {
+    name: string;
+    email: string;
+    //cart: CartInterface;
+    cart: {total: number, items: {productId: ProductInterface, quantity: number}[]}
 }
+
+export interface UserInput {
+    name: UserInterface['name'];
+    email: UserInterface['email'];
+    //cart: UserInterface['cart'];
+
+}
+
+const userSchema = new Schema(
+    {
+        name: String,
+        email: String,
+        cart: {
+            total: Number,
+            items: [
+                {
+                    productId: {type: Schema.Types.ObjectId, ref: 'Product'},
+                    quantity: Number
+                }]
+        }
+    }
+);
+
+const User = mongoose.model<UserInterface>('user', userSchema);
 
 export default User;
