@@ -1,3 +1,14 @@
-import {Model, DataTypes, BuildOptions, HasOneGetAssociationMixin} from 'sequelize';
+import Product from "./product";
 
-// We need to declare an interface for our model that is basically what our class would be
+class CartItem {
+    quantity: number;
+
+    constructor(public product: Product, quantity?: number) {
+        if(quantity)
+            this.quantity = quantity;
+        else
+            this.quantity = 1;
+    }
+}
+
+export default CartItem;

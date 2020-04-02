@@ -5,9 +5,10 @@ import * as CodesController from './src/controllers/codesController'
 import BodyParser from 'body-parser';
 import AdminRoutes from "./src/routes/adminRoutes";
 import ShopRoutes from "./src/routes/shopRoutes";
-import {getDb, mongoConnect, RequestWithUser} from "./src/utils";
+import {RequestWithUser} from "./src/utils";
 import User from "./src/models/user";
 import {ObjectId} from "mongodb";
+import mongoose from "mongoose";
 
 const app = Express();
 
@@ -15,10 +16,11 @@ app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
 app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
-    getDb().collection('users').findOne({})
+    /*getDb().collection('users').findOne({})
         .then(user => {
+            const fetchedUser = new User(user.userName, user.email, user._id);
             if(user) {
-                req.user = user;
+                req.user = fetchedUser;
                 next()
             }
             else {
@@ -31,7 +33,8 @@ app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
                         next();
                     })
             }
-        })
+        })*/
+    next();
 });
 
 app.use(BodyParser.urlencoded({extended: false}));
@@ -43,8 +46,4 @@ app.use(ShopRoutes);
 
 app.use(CodesController.code404);
 
-mongoConnect().then(() => app.listen(3000));
-
-/*const server = http.createServer(app);
-server.listen(3000);*/ // equals to
-//app.listen(3000);
+mongoose.connect('mongodb+srv://user:nF6ouPL9lcB8jZ5x@freecodecamp-w89rl.gcp.mongodb.net/node-schwarzmuller-course?retryWrites=true&w=majority').then(() => app.listen(3000));

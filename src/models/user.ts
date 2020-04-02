@@ -1,10 +1,20 @@
 import {getDb} from "../utils";
 import {ObjectId} from "mongodb";
+import Product from "./product";
+import Cart from "./cart";
 
 const COLLECTION = 'users';
 
 class User {
-    constructor(public username: string, public email: string, public _id?: ObjectId) { }
+    cart: Cart;
+
+    constructor(public username: string, public email: string, public _id?: ObjectId, cart?: any) {
+        if(cart) {
+            this.cart = new Cart();
+        }
+        else
+            this.cart = new Cart();
+    }
 
     save() {
         if(this._id)
