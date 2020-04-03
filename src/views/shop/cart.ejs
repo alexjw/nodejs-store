@@ -10,13 +10,13 @@
     <%- include('../includes/navigation.ejs', {path: '/cart'}) %>
 
     <main>
-        <% if (cart.cartItems.length > 0) { %>
+        <% if (cart.items.length > 0) { %>
             <ul class="cart__item-list">
-                <% cart.cartItems.forEach(cartItem => { %>
+                <% cart.items.forEach(cartItem => { %>
                     <li class="cart__item">
-                        <p><%= cartItem.product.title %> (<%= cartItem.quantity %>)</p>
+                        <p><%= cartItem.productId.title %> (<%= cartItem.quantity %>)</p>
                         <form action="/cart-delete-item" method="POST">
-                            <input type="hidden" value="<%= cartItem.id %>" name="id">
+                            <input type="hidden" value="<%= cartItem.productId._id %>" name="id">
                             <button class="btn danger" type="submit">Delete</button>
                         </form>
                     </li>

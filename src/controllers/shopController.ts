@@ -3,6 +3,7 @@ import Product from "../models/product";
 import {RequestWithUser} from "../utils";
 import TheProduct from "../models/product";
 import TheCartItem from "../models/cart-item";
+import User from "../models/user";
 
 export const productsGet = (req: Request, res: Response, next: NextFunction) => {
     Product.find().then((products) =>
@@ -21,6 +22,10 @@ export const productGet = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {console.log(JSON.stringify(user));res.render('shop/cart', {cart: user.cart})})
 
 };
 
@@ -34,7 +39,7 @@ export const cartDeletePost  = (req: RequestWithUser, res: Response, next: NextF
 
 export const addToCartPost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.body.id as string;
-
+    Product.findById(id).then(product => req.user.addToCart(product)).then(result => res.redirect('/cart'));
 };
 
 export const ordersGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
