@@ -4,6 +4,7 @@
 
 <head>
     <%- include('../includes/head.ejs', {title: 'Orders'}) %>
+    <link rel="stylesheet" href="/css/orders.css">
 </head>
 
 <body>
@@ -12,13 +13,13 @@
         <% if (orders.length <= 0) { %>
             <h1>Nothing there!</h1>
         <% } else { %>
-            <ul>
+            <ul class="orders">
                 <% orders.forEach(order => { %>
-                    <li>
+                    <li class="orders__item">
                         <h1># <%= order.id %></h1>
-                        <ul>
-                            <% order.orderItems.forEach(item => { %>
-                                <li><%= item.product.title %> (<%= item.product.quantity %>)</li>
+                        <ul class="orders__products">
+                            <% order.items.forEach(item => { %>
+                                <li class="orders__products-item"><%= item.product.title %> (<%= item.quantity %>)</li>
                             <% }); %>
                         </ul>
                     </li>

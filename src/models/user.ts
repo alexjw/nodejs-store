@@ -27,6 +27,7 @@ const userSchema = new Schema(
             items: [
                 {
                     productId: {type: Schema.Types.ObjectId, ref: 'Product'},
+                    price: Number,
                     quantity: Number
                 }]
         }
@@ -44,9 +45,9 @@ userSchema.methods.addToCart = function (product: ProductInterface, quantity?: n
         itemFound.quantity++;
     else {
         if(quantity)
-            thisUser.cart.items.push({productId: product, quantity});
+            thisUser.cart.items.push({productId: product, price: product.price, quantity});
         else
-            thisUser.cart.items.push({productId: product, quantity: 1});
+            thisUser.cart.items.push({productId: product, price: product.price, quantity: 1});
     }
     thisUser.cart.total += product.price * (quantity || 1);
     return thisUser.save();
@@ -54,7 +55,14 @@ userSchema.methods.addToCart = function (product: ProductInterface, quantity?: n
 
 userSchema.methods.removeFromCart = function (productId: any) {
     const thisUser = this as UserInterface;
-    thisUser.cart.items = thisUser.cart.items.filter(item => item.productId.toString() !== productId.toString());
+    let removedFromTotal = 0;
+    thisUser.cart.items = thisUser.cart.items.filter(item => {
+        if(item.productId.toString() === productId.toString()) {
+            removedFromTotal += (item.price * item.quantity);
+        }
+        return item.productId.toString() !== productId.toString()
+    });
+    thisUser.cart.total -= removedFromTotal;
     return thisUser.save();
 };
 

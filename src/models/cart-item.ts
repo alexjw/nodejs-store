@@ -1,8 +1,8 @@
-import Document from 'mongoose'
 import {ProductInterface} from "./product";
 
 interface CartItemInterface {
     productId: ProductInterface,
+    price: number,
     quantity: number
 }
 
