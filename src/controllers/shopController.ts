@@ -35,6 +35,7 @@ export const createOrderPost  = (req: RequestWithUser, res: Response, next: Next
 
 export const cartDeletePost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.body.id;
+    req.user.removeFromCart(id).then(() => res.redirect('/cart'));
 };
 
 export const addToCartPost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
