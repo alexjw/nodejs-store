@@ -17,6 +17,7 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "express-handlebars": "^4.0.0",
+    "express-session": "1.17.0",
     "mongodb": "3.5.4",
     "mongoose": "5.9.7",
     "pug": "^2.0.4",
@@ -37,6 +38,7 @@
     "@types/bluebird": "^3.5.30",
     "@types/mongodb": "3.5.4",
     "@types/mongoose": "^5.7.8",
+    "@types/express-session": "1.17.0",
     "copyfiles": "^2.2.0",
     "nodemon": "^2.0.2"
   },

@@ -5,22 +5,20 @@ import * as CodesController from './src/controllers/codesController'
 import BodyParser from 'body-parser';
 import AdminRoutes from "./src/routes/adminRoutes";
 import ShopRoutes from "./src/routes/shopRoutes";
-import {RequestWithUser} from "./src/utils";
+import {CONNECTION_URL, RequestWithUser} from "./src/utils";
 import User from "./src/models/user";
-import Cart from "./src/models/cart";
-import {ObjectId} from "mongodb";
 import mongoose from "mongoose";
+import AuthRoutes from "./src/routes/authRoutes";
+import session from "express-session";
 
 const app = Express();
 
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
-const CONNECTION_URL = 'mongodb+srv://user:nF6ouPL9lcB8jZ5x@freecodecamp-w89rl.gcp.mongodb.net/node-schwarzmuller-course?retryWrites=true&w=majority';
+app.use(session({ secret: 'a secret', resave: false, saveUninitialized: false }));
 
 app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
-    mongoose.connect(CONNECTION_URL)
-        .then(result => {
             User.findOne().then(user => {
                 if(user) {
                     req.user = user;
@@ -34,7 +32,6 @@ app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
                     });
                 }
             })
-        })
 });
 
 app.use(BodyParser.urlencoded({extended: false}));
@@ -43,6 +40,7 @@ app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing th
 
 app.use('/admin', AdminRoutes);
 app.use(ShopRoutes);
+app.use(AuthRoutes);
 
 app.use(CodesController.code404);
 
