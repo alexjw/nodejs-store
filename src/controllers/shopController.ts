@@ -3,28 +3,31 @@ import Product, {ProductInterface} from "../models/product";
 import {RequestWithUser} from "../utils";
 import Order, {OrderInput, OrderInterface} from "../models/order";
 import OrderItemInterface from "../models/order-item";
+import {code404} from "./codesController";
 
-export const productsGet = (req: Request, res: Response, next: NextFunction) => {
+export const productsGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
     Product.find().then((products) =>
-        res.render('shop/product-list', { products: products })
+        res.render('shop/product-list', { products: products, user: req.user })
     );
 };
 
-export const productGet = (req: Request, res: Response, next: NextFunction) => {
+export const productGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.params.id as string;
     Product.findById(id).then((product) => {
         if(product)
-            res.render('shop/product-detail', { product });
+            res.render('shop/product-detail', { product, user: req.user });
         else
-            res.status(404).render('404');
-    });
+            code404(req,res,next);
+    }).catch(e =>
+        code404(req,res,next)
+    );
 };
 
 export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     req.user
         .populate('cart.items.productId')
         .execPopulate()
-        .then(user => res.render('shop/cart', {cart: user.cart}))
+        .then(user => res.render('shop/cart', {cart: user.cart, user: req.user}))
 
 };
 
@@ -70,9 +73,9 @@ export const addToCartPost  = (req: RequestWithUser, res: Response, next: NextFu
 export const ordersGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     let orders: OrderInterface[] = [];
     Order.find({"userId": req.user._id})
-        .then(orders => res.render('shop/orders', {orders}));
+        .then(orders => res.render('shop/orders', {orders, user: req.user}));
 };
 
-export const checkoutGet = (req: Request, res: Response, next: NextFunction) => {
-    res.render('shop/checkout');
+export const checkoutGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    res.render('shop/checkout', {user: req.user});
 };

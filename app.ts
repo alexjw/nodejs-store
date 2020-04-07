@@ -10,28 +10,32 @@ import User from "./src/models/user";
 import mongoose from "mongoose";
 import AuthRoutes from "./src/routes/authRoutes";
 import session from "express-session";
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const app = Express();
+
+const store = new MongoDBStore(
+    {
+        uri: CONNECTION_URL,
+        collection: 'sessions'
+    }
+);
 
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
-app.use(session({ secret: 'a secret', resave: false, saveUninitialized: false }));
+app.use(session({ secret: 'a secret', resave: false, saveUninitialized: false, store }));
 
 app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
-            User.findOne().then(user => {
-                if(user) {
-                    req.user = user;
-                    next();
-                }
-                else {
-                    let newUser = new User({name: 'user', email: 'aaa@gmail.com', cart: {total: 0, items: []}})
-                    newUser.save().then(() => {
-                        req.user = newUser;
-                        next();
-                    });
-                }
-            })
+    if(req.session.user) {
+        User.findById(req.session.user._id).then(user => {
+            req.user = user;
+            next();
+        })
+    } else {
+        req.user = null;
+        next();
+    }
 });
 
 app.use(BodyParser.urlencoded({extended: false}));

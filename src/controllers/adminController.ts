@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {RequestWithUser} from "../utils";
 import Product, {ProductInput} from "../models/product";
+import {code404} from "./codesController";
 
 interface bookForm {
     title: string,
@@ -9,11 +10,12 @@ interface bookForm {
     description: string
 }
 
-export const addProductGet = (req: Request, res: Response, next: NextFunction) => {
+export const addProductGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
     res.render( 'admin/edit-product', {
         formsCSS: true,
         productCSS: true,
-        activeAddProduct: true
+        activeAddProduct: true,
+        user: req.user
     });
 };
 
@@ -22,14 +24,15 @@ export const editProductGet = (req: RequestWithUser, res: Response, next: NextFu
     Product.findById(id).then(product => {
         if(product) {
             res.render( 'admin/edit-product', {
-                product
+                product,
+                user: req.user
             });
         } else
-            res.status(404).render('404');
-    });
+            code404(req,res,next);
+    }).catch(e => code404(req,res,next));
 };
 
-export const editProductPost = (req: Request, res: Response, next: NextFunction) => {
+export const editProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const form = req.body as bookForm;
     Product.findById(req.params.id).then((product) => {
         if(product) {
@@ -37,16 +40,16 @@ export const editProductPost = (req: Request, res: Response, next: NextFunction)
             product.price = form.price;
             product.imageUrl = form.imageUrl;
             product.description = form.description;
-            product.save().then(() => res.render( 'shop/product-detail', {product}));
+            product.save().then(() => res.render( 'shop/product-detail', {product, user: req.user}));
         } else
-            res.status(404).render('404');
-    });
+            code404(req,res,next);
+    }).catch(e => code404(req,res,next));
 };
 
 export const deleteProductPost = (req: Request, res: Response, next: NextFunction) => {
     Product.findByIdAndDelete(req.body.id).then(() => {
         Product.find().then(products => res.redirect( '/admin/products'))
-    });
+    }).catch(e => code404(req,res,next));
 };
 
 
@@ -56,8 +59,8 @@ export const addProductPost = (req: RequestWithUser, res: Response, next: NextFu
     product.save().then(product => res.redirect('/admin/products'));
 };
 
-export const allProductsGet = (req: Request, res: Response, next: NextFunction) => {
+export const allProductsGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
     Product.find().then(products =>
-        res.render('admin/products', { products: products })
+        res.render('admin/products', { products: products, user: req.user })
     );
 };

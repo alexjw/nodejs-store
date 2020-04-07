@@ -1,8 +1,14 @@
 import Path from 'path'
 import {Request} from "express";
 import User, {UserInterface} from "./models/user";
+import Session from 'express-session'
+
+interface MySession extends Express.Session {
+    user: UserInterface;
+}
 
 export interface RequestWithUser extends Request {
+    session: MySession;
     user: UserInterface;
 }
 
