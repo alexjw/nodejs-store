@@ -30,7 +30,7 @@
             <label for="title">Description</label>
             <textarea name="description" id="description"><%= locals.product ? product.description : '' %></textarea>
         </div>
-        <!--<input type="hidden" name="userId" value="<%= //product.userId.toString() %>">-->
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
         <button type="submit"><%= locals.product ? 'Edit Product' : 'Add Product' %></button>
     </form>

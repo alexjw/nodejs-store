@@ -18,8 +18,7 @@ export const loginGet = (req, res, next) => {
     console.log(req.session.isLoggedIn)
     res.render('auth/login', {
         path: '/login',
-        pageTitle: 'Login',
-        user: req.user
+        pageTitle: 'Login'
     });
 };
 

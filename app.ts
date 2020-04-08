@@ -10,6 +10,7 @@ import User from "./src/models/user";
 import mongoose from "mongoose";
 import AuthRoutes from "./src/routes/authRoutes";
 import session from "express-session";
+import csurf from "csurf";
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 const app = Express();
@@ -21,10 +22,16 @@ const store = new MongoDBStore(
     }
 );
 
+const csurfProtection = csurf();
+
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
 app.use(session({ secret: 'a secret', resave: false, saveUninitialized: false, store }));
+
+app.use(BodyParser.urlencoded({extended: false}));
+
+app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing the public folder to grant access css to html
 
 app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
     if(req.session.user) {
@@ -38,9 +45,13 @@ app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
     }
 });
 
-app.use(BodyParser.urlencoded({extended: false}));
+app.use(csurfProtection);
 
-app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing the public folder to grant access css to html
+app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
+    res.locals.user = req.user;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
 
 app.use('/admin', AdminRoutes);
 app.use(ShopRoutes);
