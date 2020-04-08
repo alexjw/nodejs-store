@@ -1,18 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <%- include('../includes/head.ejs', {title: 'Login'}) %>
+    <%- include('../includes/head.ejs', {title: 'Signup'}) %>
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/auth.css">
 </head>
 
 <body>
-
-<%- include('../includes/navigation.ejs', {path: '/login'}) %>
-
+<%- include('../includes/navigation.ejs', {path: '/signup'}) %>
     <main>
-        <form class="login-form" action="/login" method="POST">
+        <form class="login-form" action="/signup" method="POST">
             <div class="form-control">
                 <label for="email">E-Mail</label>
                 <input type="email" name="email" id="email">
@@ -21,8 +18,11 @@
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password">
             </div>
+            <div class="form-control">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" name="confirmPassword" id="confirmPassword">
+            </div>
             <button class="btn" type="submit">Login</button>
         </form>
     </main>
-
 </body>
