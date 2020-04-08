@@ -9,6 +9,11 @@ interface SignUpBody {
     confirmPassword: string;
 }
 
+interface SignInBody {
+    email: string;
+    password: string;
+}
+
 export const loginGet = (req, res, next) => {
     console.log(req.session.isLoggedIn)
     res.render('auth/login', {
@@ -19,20 +24,24 @@ export const loginGet = (req, res, next) => {
 };
 
 export const loginPost = (req: RequestWithUser, res, next) => {
-    /*User.findOne().then(user => {
-        if(user) {
-            req.session.user = user;
-            res.redirect('/');
-        }
-        else {
-            let newUser = new User({password: 'aaa', email: 'aaa@gmail.com', cart: {total: 0, items: []}})
-            newUser.save().then(() => {
-                req.session.user = newUser;
-                res.redirect('/');
-            });
-        }
-    });*/
-    res.redirect('/xxx');
+    const body: SignInBody = req.body;
+    User.findOne({email: body.email})
+        .then(user => {
+            if(!user)
+                res.redirect('/login');
+            bcrypt.compare(body.password, user.password)
+                .then(matched => {
+                    if(matched) {
+                        req.session.user = user;
+                        return req.session.save(() => res.redirect('/'));
+                    }
+                    else {
+                        return res.redirect('login');
+                    }
+
+                })
+                .catch(ree => res.redirect('/login'))
+        })
 };
 
 export const logoutPost = (req: RequestWithUser, res, next) => {

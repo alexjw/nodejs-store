@@ -46,9 +46,9 @@ export const editProductPost = (req: RequestWithUser, res: Response, next: NextF
     }).catch(e => code404(req,res,next));
 };
 
-export const deleteProductPost = (req: Request, res: Response, next: NextFunction) => {
+export const deleteProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     Product.findByIdAndDelete(req.body.id).then(() => {
-        Product.find().then(products => res.redirect( '/admin/products'))
+        res.redirect( '/admin/products')
     }).catch(e => code404(req,res,next));
 };
 
