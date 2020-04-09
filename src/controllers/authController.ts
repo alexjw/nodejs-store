@@ -18,7 +18,8 @@ export const loginGet = (req, res, next) => {
     console.log(req.session.isLoggedIn)
     res.render('auth/login', {
         path: '/login',
-        pageTitle: 'Login'
+        pageTitle: 'Login',
+        flashMessage: req.flash('flashMessage')
     });
 };
 
@@ -26,8 +27,10 @@ export const loginPost = (req: RequestWithUser, res, next) => {
     const body: SignInBody = req.body;
     User.findOne({email: body.email})
         .then(user => {
-            if(!user)
+            if(!user) {
+                req.flash('flashMessage', 'Invalid email');
                 res.redirect('/login');
+            }
             bcrypt.compare(body.password, user.password)
                 .then(matched => {
                     if(matched) {
@@ -35,6 +38,7 @@ export const loginPost = (req: RequestWithUser, res, next) => {
                         return req.session.save(() => res.redirect('/'));
                     }
                     else {
+                        req.flash('flashMessage', 'Invalid password');
                         return res.redirect('login');
                     }
 
@@ -48,15 +52,17 @@ export const logoutPost = (req: RequestWithUser, res, next) => {
 };
 
 export const signupGet = (req: RequestWithUser, res, next) => {
-    res.render('auth/signup', {user: req.user})
+    res.render('auth/signup', {user: req.user, flashMessage: req.flash('flashMessage')})
 };
 
 export const signupPost = (req: RequestWithUser, res, next) => {
     const body: SignUpBody = req.body;
     User.findOne({email: body.email})
         .then(user => {
-            if(user)
+            if(user) {
+                req.flash('flashMessage', 'Email already exists');
                 return res.redirect('/signup');
+            }
             return bcrypt.hash(body.password, 12).then(password => {
                 const newUser = new User(
                     {

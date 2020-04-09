@@ -12,6 +12,9 @@
 <%- include('../includes/navigation.ejs', {path: '/login'}) %>
 
     <main>
+        <% if (flashMessage && flashMessage.length > 0) { %>
+            <div class="user-message user-message--error"><%= flashMessage %></div>
+        <% } %>
         <form class="login-form" action="/login" method="POST">
             <div class="form-control">
                 <label for="email">E-Mail</label>

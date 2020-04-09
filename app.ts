@@ -11,6 +11,7 @@ import mongoose from "mongoose";
 import AuthRoutes from "./src/routes/authRoutes";
 import session from "express-session";
 import csurf from "csurf";
+import flash from 'connect-flash'
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 const app = Express();
@@ -46,6 +47,7 @@ app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
 });
 
 app.use(csurfProtection);
+app.use(flash());
 
 app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
     res.locals.user = req.user;
