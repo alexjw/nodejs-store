@@ -36,6 +36,9 @@ export const editProductPost = (req: RequestWithUser, res: Response, next: NextF
     const form = req.body as bookForm;
     Product.findById(req.params.id).then((product) => {
         if(product) {
+            if(product.userId.toString() !== req.user._id.toString()) {
+                return res.redirect('/');
+            }
             product.title = form.title;
             product.price = form.price;
             product.imageUrl = form.imageUrl;
@@ -47,7 +50,7 @@ export const editProductPost = (req: RequestWithUser, res: Response, next: NextF
 };
 
 export const deleteProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    Product.findByIdAndDelete(req.body.id).then(() => {
+    Product.deleteOne({_id: req.body.id, userId: req.user._id}).then(() => {
         res.redirect( '/admin/products')
     }).catch(e => code404(req,res,next));
 };
@@ -60,7 +63,7 @@ export const addProductPost = (req: RequestWithUser, res: Response, next: NextFu
 };
 
 export const allProductsGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    Product.find().then(products =>
+    Product.find({userId: req.user._id}).then(products =>
         res.render('admin/products', { products: products, user: req.user })
     );
 };
