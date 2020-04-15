@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {RequestWithUser} from "../utils";
 import Product, {ProductInput} from "../models/product";
-import {code404} from "./codesController";
+import {code404, code500} from "./codesController";
 
 interface bookForm {
     title: string,
@@ -59,11 +59,11 @@ export const deleteProductPost = (req: RequestWithUser, res: Response, next: Nex
 export const addProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const {title, imageUrl, description, price} = req.body as bookForm;
     let product = new Product({title, price, description, imageUrl, userId: req.user.id});
-    product.save().then(product => res.redirect('/admin/products'));
+    product.save().then(product => res.redirect('/admin/products')).catch(e => code500(req,res,next));
 };
 
 export const allProductsGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    Product.find({userId: req.user._id}).then(products =>
+    Product.find().then(products =>
         res.render('admin/products', { products: products, user: req.user })
-    );
+    ).catch(e => code500(req,res,next));
 };

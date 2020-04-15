@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import * as bcrypt from 'bcryptjs'
 import User from "../models/user";
 import {validationResult} from "express-validator";
+import {code500} from "./codesController";
 
 interface SignUpBody {
     email: string;
@@ -48,7 +49,7 @@ export const loginPost = (req: RequestWithUser, res, next) => {
 
                 })
                 .catch(ree => res.redirect('/login'))
-        })
+        }).catch(error => code500(req,res,next));
 };
 
 export const logoutPost = (req: RequestWithUser, res, next) => {
@@ -78,5 +79,6 @@ export const signupPost = (req: RequestWithUser, res, next) => {
             }
         );
         return newUser.save();
-    }).then( () => res.redirect('/login'));
+    }).then( () => res.redirect('/login'))
+        .catch(error => code500(req,res,next));;
 };

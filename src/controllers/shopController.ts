@@ -3,12 +3,12 @@ import Product, {ProductInterface} from "../models/product";
 import {RequestWithUser} from "../utils";
 import Order, {OrderInput, OrderInterface} from "../models/order";
 import OrderItemInterface from "../models/order-item";
-import {code404} from "./codesController";
+import {code404, code500} from "./codesController";
 
 export const productsGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    Product.find().then((products) =>
-        res.render('shop/product-list', { products: products, user: req.user })
-    );
+    Product.find()
+        .then((products) => res.render('shop/product-list', { products: products, user: req.user }))
+        .catch(error => code500(req,res,next));
 };
 
 export const productGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -18,9 +18,7 @@ export const productGet = (req: RequestWithUser, res: Response, next: NextFuncti
             res.render('shop/product-detail', { product, user: req.user });
         else
             code404(req,res,next);
-    }).catch(e =>
-        code404(req,res,next)
-    );
+    }).catch(error => code500(req,res,next));
 };
 
 export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -28,7 +26,7 @@ export const cartGet  = (req: RequestWithUser, res: Response, next: NextFunction
         .populate('cart.items.productId')
         .execPopulate()
         .then(user => res.render('shop/cart', {cart: user.cart, user: req.user}))
-
+        .catch(error => code500(req,res,next));
 };
 
 export const createOrderPost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -57,23 +55,28 @@ export const createOrderPost  = (req: RequestWithUser, res: Response, next: Next
 
         })
         .then(() => res.redirect('/orders'))
-        .catch(e => console.log(e));
+        .catch(error => code500(req,res,next));
 };
 
 export const cartDeletePost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.body.id;
-    req.user.removeFromCart(id).then(() => res.redirect('/cart'));
+    req.user.removeFromCart(id)
+        .then(() => res.redirect('/cart'))
+        .catch(error => code500(req,res,next));;
 };
 
 export const addToCartPost  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     const id = req.body.id as string;
-    Product.findById(id).then(product => req.user.addToCart(product)).then(result => res.redirect('/cart'));
+    Product.findById(id).then(product => req.user.addToCart(product))
+        .then(result => res.redirect('/cart'))
+        .catch(error => code500(req,res,next));;
 };
 
 export const ordersGet  = (req: RequestWithUser, res: Response, next: NextFunction) => {
     let orders: OrderInterface[] = [];
     Order.find({"userId": req.user._id})
-        .then(orders => res.render('shop/orders', {orders, user: req.user}));
+        .then(orders => res.render('shop/orders', {orders, user: req.user}))
+        .catch(error => code500(req,res,next));;
 };
 
 export const checkoutGet = (req: RequestWithUser, res: Response, next: NextFunction) => {

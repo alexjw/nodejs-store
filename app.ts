@@ -12,6 +12,7 @@ import AuthRoutes from "./src/routes/authRoutes";
 import session from "express-session";
 import csurf from "csurf";
 import flash from 'connect-flash'
+import {code500} from "./src/controllers/codesController";
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 const app = Express();
@@ -36,10 +37,14 @@ app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing th
 
 app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
     if(req.session.user) {
-        User.findById(req.session.user._id).then(user => {
-            req.user = user;
-            next();
-        })
+        User.findById(req.session.user._id)
+            .then(user => {
+                req.user = user;
+                next();
+            })
+            .catch(error => {
+                throw new Error(error)
+            });
     } else {
         req.user = null;
         next();
@@ -60,5 +65,11 @@ app.use(ShopRoutes);
 app.use(AuthRoutes);
 
 app.use(CodesController.code404);
+app.use(CodesController.code500);
+
+// Error handling middleware, it skips to this whenever you call next(error) in controller
+app.use((error, req, res, next) => {
+    code500(req,res,next);
+});
 
 mongoose.connect(CONNECTION_URL).then(() => app.listen(3000));
