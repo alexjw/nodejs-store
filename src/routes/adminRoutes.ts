@@ -10,8 +10,10 @@ router.get('/add-product', Middlewares.isAuth, AdminController.addProductGet);
 router.post('/add-product', Middlewares.isAuth, AdminController.addProductPost);
 router.get('/edit-product/:id', Middlewares.isAuth, AdminController.editProductGet);
 router.post('/edit-product/:id', Middlewares.isAuth, AdminController.editProductPost);
-router.post('/delete-product', Middlewares.isAuth, AdminController.deleteProductPost);
+//router.post('/delete-product', Middlewares.isAuth, AdminController.deleteProductPost);
 router.get('/products', Middlewares.isAuth, AdminController.allProductsGet);
+
+router.delete('/product/:id', Middlewares.isAuth, AdminController.deleteProductDelete);
 
 
 export default router;

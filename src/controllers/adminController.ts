@@ -49,10 +49,11 @@ export const editProductPost = (req: RequestWithUser, res: Response, next: NextF
     }).catch(e => code404(req,res,next));
 };
 
-export const deleteProductPost = (req: RequestWithUser, res: Response, next: NextFunction) => {
-    Product.deleteOne({_id: req.body.id, userId: req.user._id}).then(() => {
-        res.redirect( '/admin/products')
-    }).catch(e => code404(req,res,next));
+export const deleteProductDelete = (req: RequestWithUser, res: Response, next: NextFunction) => {
+
+    Product.deleteOne({_id: req.params.id, userId: req.user._id}).then(() => {
+        res.status(200).json({message: "success"})
+    }).catch(e => res.status(500).json({message: e.toString()}));
 };
 
 
