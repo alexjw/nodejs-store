@@ -5,9 +5,21 @@ import Order, {OrderInput, OrderInterface} from "../models/order";
 import OrderItemInterface from "../models/order-item";
 import {code404, code500} from "./codesController";
 
+const ITEMS_PER_PAGE = 2;
+
 export const productsGet = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const page = +req.query.page || 1 as number;
+    let totalCount = 0;
     Product.find()
-        .then((products) => res.render('shop/product-list', { products: products, user: req.user }))
+        .countDocuments()
+        .then(count => {
+            totalCount = count;
+            return Product.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE)
+        }
+        )
+        .then((products) => res.render('shop/product-list', { products: products, user: req.user, totalCount, itemsPerPage: ITEMS_PER_PAGE, page }))
         .catch(error => code500(req,res,next));
 };
 

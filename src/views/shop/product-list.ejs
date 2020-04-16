@@ -37,6 +37,23 @@
                 </article>
             <% } %>
         </div>
+        <section class="pagination">
+            <%
+                let hasNextPage = (itemsPerPage * page) < totalCount;
+                let hasPreviousPage = page > 1;
+                let lastPage = Math.ceil(totalCount / itemsPerPage);
+            %>
+            <% if (page != 1) { %>
+                <a href="/?page=1">1</a>
+            <% } %>
+            <a href="/?page=<%= page %>"><%= page %></a>
+            <% if (hasNextPage) { %>
+                <a href="/?page=<%= page+1 %>"><%= page+1 %></a>
+            <% } %>
+            <% if(page != lastPage && lastPage != page+1) { %>
+                <a href="/?page=<%= page %>"><%= lastPage %></a>
+            <% } %>
+        </section>
     <% } else { %>
         <h1>No Products Found!</h1>
     <% } %>

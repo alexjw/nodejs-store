@@ -69,6 +69,7 @@ app.use(CodesController.code500);
 
 // Error handling middleware, it skips to this whenever you call next(error) in controller
 app.use((error, req, res, next) => {
+    console.log(error);
     code500(req,res,next);
 });
 
