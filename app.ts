@@ -13,6 +13,9 @@ import session from "express-session";
 import csurf from "csurf";
 import flash from 'connect-flash'
 import {code500} from "./src/controllers/codesController";
+import graphqlHTTP from "express-graphql";
+import Schema from "./src/graphql/schema";
+import Resolver from "./src/graphql/resolvers";
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 const app = Express();
@@ -31,7 +34,8 @@ app.set('views', './src/views');
 
 app.use(session({ secret: 'a secret', resave: false, saveUninitialized: false, store }));
 
-app.use(BodyParser.urlencoded({extended: false}));
+// Not used for graphql
+//app.use(BodyParser.urlencoded({extended: false}));
 
 app.use(Express.static(Path.join(__dirname, "../", 'public')));    // Routing the public folder to grant access css to html
 
@@ -51,18 +55,25 @@ app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
     }
 });
 
-app.use(csurfProtection);
+//app.use(csurfProtection);
 app.use(flash());
 
-app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
+/*app.use((req: RequestWithUser, res: Response, next: NextFunction) => {
     res.locals.user = req.user;
     res.locals.csrfToken = req.csrfToken();
     next();
-});
+});*/
 
 app.use('/admin', AdminRoutes);
-app.use(ShopRoutes);
-app.use(AuthRoutes);
+//app.use(ShopRoutes);
+//app.use(AuthRoutes);
+
+app.use('/graphql', graphqlHTTP(
+    {
+        schema: Schema,
+        rootValue: Resolver
+    }
+));
 
 app.use(CodesController.code404);
 app.use(CodesController.code500);
